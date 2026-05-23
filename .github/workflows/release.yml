@@ -17,6 +17,7 @@ jobs:
       CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
       CC_aarch64_unknown_linux_gnu: aarch64-linux-gnu-gcc
       AR_aarch64_unknown_linux_gnu: aarch64-linux-gnu-ar
+      CFLAGS_aarch64_unknown_linux_gnu: -I/usr/aarch64-linux-gnu/include
 
     steps:
       - name: Checkout
@@ -25,7 +26,9 @@ jobs:
       - name: Install Linux cross-build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends gcc-aarch64-linux-gnu
+          sudo apt-get install -y --no-install-recommends \
+            gcc-aarch64-linux-gnu \
+            libc6-dev-arm64-cross
 
       - name: Install Rust targets
         run: rustup target add x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu
