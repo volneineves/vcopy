@@ -1,4 +1,4 @@
-# VCopy
+<h1 align="center"><b><font color="#22c55e">VCopy</font></b></h1>
 
 VCopy is a clipboard history tool built for people who live in the terminal but still want a fast popup picker when they need it.
 
@@ -9,6 +9,20 @@ It can run as:
 - a direct CLI for scripting, searching, copying, editing, and deleting history without opening the UI
 
 The command surface is intentionally kept close to the TUI action set, so the same workflow can later be reused by a graphical interface without changing the storage model.
+
+## Supported Terminals
+
+VCopy can generate popup launch commands for:
+
+- GNOME Console (`kgx`, `console`, `gnome-console`)
+- Kitty
+- Alacritty
+- Foot
+- WezTerm
+- GNOME Terminal
+- Konsole
+- Xfce Terminal
+- Xterm
 
 ## Installation
 
