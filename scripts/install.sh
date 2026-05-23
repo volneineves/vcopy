@@ -9,11 +9,19 @@ bin_dir="$prefix/bin"
 os="$(uname -s | tr '[:upper:]' '[:lower:]')"
 arch="$(uname -m)"
 
+case "$os" in
+  linux) ;;
+  *)
+    echo "Unsupported OS: $os (supported: linux)" >&2
+    exit 1
+    ;;
+esac
+
 case "$arch" in
   x86_64|amd64) arch="x86_64" ;;
   aarch64|arm64) arch="aarch64" ;;
   *)
-    echo "Unsupported architecture: $arch" >&2
+    echo "Unsupported architecture: $arch (supported: x86_64/amd64, aarch64/arm64)" >&2
     exit 1
     ;;
 esac

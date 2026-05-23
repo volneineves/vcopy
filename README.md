@@ -2,6 +2,8 @@
 
 VCopy is a clipboard history tool built for people who live in the terminal but still want a fast popup picker when they need it.
 
+![VCopy terminal picker](./assets/tui-screenshot.png)
+
 It can run as:
 
 - a background daemon that records clipboard changes
@@ -26,7 +28,8 @@ VCopy can generate popup launch commands for:
 
 ## Installation
 
-Install the latest Linux x86_64 release:
+Install the latest Linux release. The installer selects the matching binary for
+`x86_64`/`amd64` or ARM64/`aarch64` automatically:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | sh
@@ -52,6 +55,18 @@ Release assets use this naming format:
 vcopy-linux-x86_64.tar.gz
 vcopy-linux-aarch64.tar.gz
 ```
+
+Build release assets locally:
+
+```bash
+rustup target add x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu
+scripts/package-release.sh
+```
+
+The `rustup target add` command is only needed when using a Rust toolchain
+managed by rustup. The script writes release archives to `dist/`. Building the
+ARM64 archive from an x86_64 machine may require an ARM64 cross-linker/toolchain;
+alternatively, run the script on an ARM64 Linux machine.
 
 ## Quick Start
 
