@@ -28,8 +28,10 @@ VCopy can generate popup launch commands for:
 
 ## Installation
 
-Install the latest Linux release. The installer selects the matching binary for
-`x86_64`/`amd64` or ARM64/`aarch64` automatically:
+Install the latest Linux release. The installer downloads a prebuilt binary from
+the [GitHub Releases](https://github.com/volneineves/vcopy/releases) page and
+selects the matching asset for `x86_64`/`amd64` or ARM64/`aarch64`
+automatically:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | sh
@@ -56,7 +58,15 @@ vcopy-linux-x86_64.tar.gz
 vcopy-linux-aarch64.tar.gz
 ```
 
-Build release assets locally:
+Release assets are published automatically when a version tag is pushed:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+The release workflow builds and uploads the binaries to GitHub Releases. Build
+the same assets locally with:
 
 ```bash
 rustup target add x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu
@@ -112,7 +122,8 @@ MAJOR.MINOR.PATCH
 - Increment `MINOR` for backwards-compatible features.
 - Increment `MAJOR` for breaking CLI, config, storage, or automation changes.
 
-Every release should have a matching Git tag:
+Every release should have a matching Git tag. Pushing the tag starts the release
+workflow:
 
 ```bash
 git tag v0.1.0
