@@ -109,6 +109,7 @@ Deletes a single history item by id. If the item is an image, its stored image f
 
 ```bash
 vcopy --clear
+vcopy clear
 ```
 
 Clears all history. Stored image files managed by VCopy are removed as well.
