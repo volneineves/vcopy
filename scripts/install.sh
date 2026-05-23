@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-repo="${VCOPY_REPO:-OWNER/vcopy}"
+repo="${VCOPY_REPO:-volneineves/vcopy}"
 version="${VCOPY_VERSION:-latest}"
 prefix="${VCOPY_PREFIX:-$HOME/.local}"
 bin_dir="$prefix/bin"

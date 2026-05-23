@@ -14,19 +14,19 @@ vcopy-linux-aarch64.tar.gz
 Users can install the latest release with:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/vcopy/main/scripts/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | sh
 ```
 
 Until the repository owner is final, the installer can be pointed at any GitHub repository:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/vcopy/main/scripts/install.sh | VCOPY_REPO=OWNER/vcopy sh
+curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | VCOPY_REPO=volneineves/vcopy sh
 ```
 
 To install a specific version:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/vcopy/main/scripts/install.sh | VCOPY_REPO=OWNER/vcopy VCOPY_VERSION=v0.1.0 sh
+curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | VCOPY_REPO=volneineves/vcopy VCOPY_VERSION=v0.1.0 sh
 ```
 
 The installer places the binary in:
@@ -65,7 +65,7 @@ vcopy --version
 Users can update to the latest release with the same installer command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/vcopy/main/scripts/install.sh | VCOPY_REPO=OWNER/vcopy sh
+curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | VCOPY_REPO=volneineves/vcopy sh
 ```
 
 A future update-check feature can compare `vcopy --version` with the latest GitHub release. A good CLI shape would be:
