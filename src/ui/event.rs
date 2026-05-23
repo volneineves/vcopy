@@ -55,6 +55,12 @@ pub fn loop_events<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Res
                             KeyCode::Char('d') if prev == Some('d') => {
                                 app.delete_selected(); // dd
                             }
+                            KeyCode::Char('c') if prev != Some('c') => {
+                                app.last_key = Some('c'); // wait for cc
+                            }
+                            KeyCode::Char('c') if prev == Some('c') => {
+                                app.clear_history(); // cc
+                            }
 
                             // ── refresh ───────────────────────────────────
                             KeyCode::Char('r') => {

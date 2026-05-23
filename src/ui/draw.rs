@@ -178,6 +178,7 @@ fn hint_bar(s: &crate::i18n::Strings) -> Line<'static> {
         key("Enter"),  label(format!(" {}", s.hint_copy)),    sep(),
         key("e"),      label(format!(" {}", s.hint_edit)),    sep(),
         key("dd"),     label(format!(" {}", s.hint_delete)),  sep(),
+        key("cc"),     label(" clear".into()),                sep(),
         key("/"),      label(format!(" {}", s.hint_search)),  sep(),
         key("gg"),     label(" top".into()),                  sep(),
         key("G"),      label(" bot".into()),                  sep(),

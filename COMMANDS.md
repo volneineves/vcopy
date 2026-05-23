@@ -85,11 +85,22 @@ vcopy
 
 Opens the terminal history picker. Use the arrow keys or `j`/`k` to move, `Enter` to copy the selected item, `/` to search, `dd` to delete, and `q` to quit.
 
+The TUI action set matches the direct CLI history operations:
+
+- `Enter` / `y`: copy the selected item
+- `/`: search history
+- `e`: edit a text item
+- `dd`: delete the selected item
+- `cc`: clear all history
+- `r`: refresh the list
+
 ## Direct History Commands
 
 ```bash
 vcopy --list
 vcopy --list -n 10
+vcopy list
+vcopy list -l 10
 ```
 
 Prints history without opening the UI. Each line includes the item id, kind, timestamp, and preview. Use the id with `--delete`.
@@ -97,12 +108,29 @@ Prints history without opening the UI. Each line includes the item id, kind, tim
 ```bash
 vcopy --search query
 vcopy --search query -n 10
+vcopy search query
+vcopy search query -l 10
 ```
 
 Searches text previews and image markers without opening the UI. Images are shown as `[image WIDTHxHEIGHT]`.
 
 ```bash
+vcopy --copy 42
+vcopy copy 42
+```
+
+Copies a history item by id without opening the UI. Text items are copied as text. Image items are copied back as image data.
+
+```bash
+vcopy --edit 42 --content "new text"
+vcopy edit 42 "new text"
+```
+
+Updates a text item by id without opening the UI. Image items are not edited as text.
+
+```bash
 vcopy --delete 42
+vcopy delete 42
 ```
 
 Deletes a single history item by id. If the item is an image, its stored image file is removed too.

@@ -135,6 +135,19 @@ impl Storage {
         Ok(items)
     }
 
+    pub fn get(&self, id: i64) -> Result<Option<ClipItem>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, kind, content, image_path, image_width, image_height, copied_at
+             FROM history WHERE id = ?1",
+        )?;
+        let mut rows = stmt.query(params![id])?;
+        if let Some(row) = rows.next()? {
+            Ok(Some(map_clip_item(row)?))
+        } else {
+            Ok(None)
+        }
+    }
+
     pub fn search(&self, query: &str, limit: usize) -> Result<Vec<ClipItem>> {
         let pattern = format!("%{}%", query.to_lowercase());
         let mut stmt = self.conn.prepare(
@@ -163,12 +176,12 @@ impl Storage {
         Ok(changed > 0)
     }
 
-    pub fn update(&self, id: i64, new_content: &str) -> Result<()> {
-        self.conn.execute(
-            "UPDATE history SET content = ?1 WHERE id = ?2",
+    pub fn update_text(&self, id: i64, new_content: &str) -> Result<bool> {
+        let changed = self.conn.execute(
+            "UPDATE history SET content = ?1 WHERE id = ?2 AND kind = 'text'",
             params![new_content, id],
         )?;
-        Ok(())
+        Ok(changed > 0)
     }
 
     pub fn clear(&self) -> Result<()> {

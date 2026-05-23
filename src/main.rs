@@ -1,3 +1,4 @@
+mod clipboard;
 mod config;
 mod i18n;
 mod service;
@@ -24,6 +25,15 @@ struct Cli {
     /// Delete a history item by id without opening the TUI
     #[arg(long)]
     delete: Option<i64>,
+    /// Copy a history item by id without opening the TUI
+    #[arg(long)]
+    copy: Option<i64>,
+    /// Edit a text history item by id without opening the TUI
+    #[arg(long)]
+    edit: Option<i64>,
+    /// New text for --edit
+    #[arg(long)]
+    content: Option<String>,
     /// Clear all history without opening the TUI
     #[arg(long)]
     clear: bool,
@@ -50,6 +60,25 @@ enum Commands {
     Uninstall,
     /// Show the daemon service status
     Status,
+    /// Search history without opening the TUI
+    Search {
+        query: String,
+        #[arg(short, long, default_value = "20")]
+        limit: usize,
+    },
+    /// Copy a history item by id without opening the TUI
+    Copy {
+        id: i64,
+    },
+    /// Delete a history item by id without opening the TUI
+    Delete {
+        id: i64,
+    },
+    /// Edit a text history item by id without opening the TUI
+    Edit {
+        id: i64,
+        content: String,
+    },
     /// List history items (pipe-friendly)
     List {
         #[arg(short, long, default_value = "20")]
@@ -95,11 +124,12 @@ async fn main() -> Result<()> {
         Some(Commands::Restart) => service::restart()?,
         Some(Commands::Uninstall) => service::uninstall()?,
         Some(Commands::Status) => service::status()?,
+        Some(Commands::Search { query, limit }) => print_items(storage.search(&query, limit)?),
+        Some(Commands::Copy { id }) => copy_item_by_id(&storage, id)?,
+        Some(Commands::Delete { id }) => delete_item_by_id(&storage, id)?,
+        Some(Commands::Edit { id, content }) => edit_item_by_id(&storage, id, &content)?,
         Some(Commands::List { limit }) => {
-            let items = storage.list(limit)?;
-            for item in items {
-                println!("{}", item.display_content());
-            }
+            print_items(storage.list(limit)?);
         }
         Some(Commands::Clear) => {
             storage.clear()?;
@@ -132,12 +162,21 @@ async fn main() -> Result<()> {
 }
 
 fn handle_direct_command(cli: &Cli, storage: &Storage) -> Result<bool> {
+    if let Some(id) = cli.copy {
+        copy_item_by_id(storage, id)?;
+        return Ok(true);
+    }
+
+    if let Some(id) = cli.edit {
+        let Some(content) = &cli.content else {
+            anyhow::bail!("--edit requires --content");
+        };
+        edit_item_by_id(storage, id, content)?;
+        return Ok(true);
+    }
+
     if let Some(id) = cli.delete {
-        if storage.delete(id)? {
-            println!("Deleted item {id}.");
-        } else {
-            println!("Item {id} was not found.");
-        }
+        delete_item_by_id(storage, id)?;
         return Ok(true);
     }
 
@@ -148,20 +187,50 @@ fn handle_direct_command(cli: &Cli, storage: &Storage) -> Result<bool> {
     }
 
     if let Some(query) = &cli.search {
-        for item in storage.search(query, cli.limit)? {
-            println!("{}", format_cli_item(&item));
-        }
+        print_items(storage.search(query, cli.limit)?);
         return Ok(true);
     }
 
     if cli.list {
-        for item in storage.list(cli.limit)? {
-            println!("{}", format_cli_item(&item));
-        }
+        print_items(storage.list(cli.limit)?);
         return Ok(true);
     }
 
     Ok(false)
+}
+
+fn copy_item_by_id(storage: &Storage, id: i64) -> Result<()> {
+    let Some(item) = storage.get(id)? else {
+        println!("Item {id} was not found.");
+        return Ok(());
+    };
+    clipboard::copy_item_to_clipboard(storage, &item)?;
+    println!("Copied item {id}.");
+    Ok(())
+}
+
+fn delete_item_by_id(storage: &Storage, id: i64) -> Result<()> {
+    if storage.delete(id)? {
+        println!("Deleted item {id}.");
+    } else {
+        println!("Item {id} was not found.");
+    }
+    Ok(())
+}
+
+fn edit_item_by_id(storage: &Storage, id: i64, content: &str) -> Result<()> {
+    if storage.update_text(id, content)? {
+        println!("Updated item {id}.");
+    } else {
+        println!("Text item {id} was not found.");
+    }
+    Ok(())
+}
+
+fn print_items(items: Vec<ClipItem>) {
+    for item in items {
+        println!("{}", format_cli_item(&item));
+    }
 }
 
 fn format_cli_item(item: &ClipItem) -> String {
