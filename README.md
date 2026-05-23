@@ -1,32 +1,27 @@
-# VCopy Commands
+# VCopy
 
-VCopy can be used as an interactive terminal UI, a background clipboard daemon, or a direct command-line tool. This makes the storage layer usable today from scripts and leaves a clean path for a future graphical interface.
+VCopy is a clipboard history tool built for people who live in the terminal but still want a fast popup picker when they need it.
+
+It can run as:
+
+- a background daemon that records clipboard changes
+- an interactive terminal UI for quick selection
+- a direct CLI for scripting, searching, copying, editing, and deleting history without opening the UI
+
+The command surface is intentionally kept close to the TUI action set, so the same workflow can later be reused by a graphical interface without changing the storage model.
 
 ## Installation
 
-For public releases, publish a compressed binary named with this format:
-
-```text
-vcopy-linux-x86_64.tar.gz
-vcopy-linux-aarch64.tar.gz
-```
-
-Users can install the latest release with:
+Install the latest Linux x86_64 release:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | sh
 ```
 
-Until the repository owner is final, the installer can be pointed at any GitHub repository:
+Install a specific version:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | VCOPY_REPO=volneineves/vcopy sh
-```
-
-To install a specific version:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | VCOPY_REPO=volneineves/vcopy VCOPY_VERSION=v0.1.0 sh
+curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | VCOPY_VERSION=v0.1.0 sh
 ```
 
 The installer places the binary in:
@@ -37,9 +32,48 @@ The installer places the binary in:
 
 Make sure `~/.local/bin` is in the user's `PATH`.
 
+Release assets use this naming format:
+
+```text
+vcopy-linux-x86_64.tar.gz
+vcopy-linux-aarch64.tar.gz
+```
+
+## Quick Start
+
+Start the daemon:
+
+```bash
+vcopy start
+```
+
+Open the terminal picker:
+
+```bash
+vcopy
+```
+
+List recent entries without opening the picker:
+
+```bash
+vcopy --list -n 10
+```
+
+Search history:
+
+```bash
+vcopy --search meeting
+```
+
+Copy an item by id:
+
+```bash
+vcopy copy 42
+```
+
 ## Versioning and Updates
 
-VCopy should use semantic versioning:
+VCopy uses semantic versioning:
 
 ```text
 MAJOR.MINOR.PATCH
@@ -65,7 +99,7 @@ vcopy --version
 Users can update to the latest release with the same installer command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | VCOPY_REPO=volneineves/vcopy sh
+curl -fsSL https://raw.githubusercontent.com/volneineves/vcopy/main/scripts/install.sh | sh
 ```
 
 A future update-check feature can compare `vcopy --version` with the latest GitHub release. A good CLI shape would be:
@@ -83,7 +117,7 @@ The daemon or TUI can later show a non-blocking message when a newer release exi
 vcopy
 ```
 
-Opens the terminal history picker. Use the arrow keys or `j`/`k` to move, `Enter` to copy the selected item, `/` to search, `dd` to delete, and `q` to quit.
+Opens the terminal history picker.
 
 The TUI action set matches the direct CLI history operations:
 
@@ -93,6 +127,7 @@ The TUI action set matches the direct CLI history operations:
 - `dd`: delete the selected item
 - `cc`: clear all history
 - `r`: refresh the list
+- `q`: quit
 
 ## Direct History Commands
 
@@ -103,7 +138,7 @@ vcopy list
 vcopy list -l 10
 ```
 
-Prints history without opening the UI. Each line includes the item id, kind, timestamp, and preview. Use the id with `--delete`.
+Prints history without opening the UI. Each line includes the item id, kind, timestamp, and preview. Use the id with `copy`, `edit`, or `delete`.
 
 ```bash
 vcopy --search query
@@ -197,8 +232,8 @@ Shows or changes the UI language.
 
 VCopy currently supports:
 
-- Text clipboard entries
-- Image clipboard entries
+- text clipboard entries
+- image clipboard entries
 - PNG screenshots saved in `~/Pictures/Screenshots`
 
 Images are intentionally shown as metadata, not previews, so the CLI remains portable across terminals.
